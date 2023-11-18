@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"time"
 
@@ -116,6 +117,16 @@ func (b *Bolt) Load(id string) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+// Delete image from storage
+func (b *Bolt) Delete(id string) error {
+	return b.db.Update(func(tx *bolt.Tx) error {
+		// deleting non-existing key doesn't return an error
+		err := tx.Bucket([]byte(imagesBktName)).Delete([]byte(id))
+		err = errors.Join(err, tx.Bucket([]byte(imagesStagedBktName)).Delete([]byte(id)))
+		return err
+	})
 }
 
 // Cleanup runs scan of staging and removes old data based on ttl

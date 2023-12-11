@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: [ "self-hosted", "www-production" ]
 
     steps:
       - name: checkout
@@ -62,8 +62,8 @@ jobs:
           docker buildx build --push --no-cache --platform linux/amd64,linux/arm/v7,linux/arm64 \
             -t ghcr.io/umputun/remark42-site:${ref} -t ghcr.io/umputun/remark42-site:latest .
 
-      - name: remote site deployment from master
-        if: ${{ github.ref == 'refs/heads/master' }}
-        env:
-          UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
-        run: curl https://jess.umputun.com/update/remark42-site/${UPDATER_KEY}
+      # - name: remote site deployment from master
+      #   if: ${{ github.ref == 'refs/heads/master' }}
+      #   env:
+      #     UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
+      #   run: curl https://jess.umputun.com/update/remark42-site/${UPDATER_KEY}

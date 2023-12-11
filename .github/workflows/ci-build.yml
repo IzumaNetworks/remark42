@@ -26,7 +26,7 @@ on:
 jobs:
   build-images:
     name: Build Docker images
-    runs-on: ubuntu-latest
+    runs-on: [ "self-hosted", "www-production" ]
 
     steps:
       - uses: actions/checkout@v3
@@ -59,7 +59,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.PKG_TOKEN }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
           GITHUB_SHA: ${{ github.sha}}
           GITHUB_REF: ${{ github.ref}}
@@ -67,35 +66,26 @@ jobs:
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo "GITHUB_REF=${GITHUB_REF}, GITHUB_SHA=${GITHUB_SHA}, GIT_BRANCH=${ref}"
           echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
-          echo ${DOCKER_HUB_TOKEN} | docker login -u umputun --password-stdin
           docker buildx build --push \
               --build-arg SKIP_BACKEND_TEST=true --build-arg SKIP_FRONTEND_TEST=true --build-arg CI=github \
               --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} --build-arg GITHUB_REF=${GITHUB_REF} \
               --platform linux/amd64,linux/arm/v7,linux/arm64 \
-              -t ghcr.io/umputun/remark42:${ref} -t umputun/remark42:${ref} .
+              -t ghcr.io/izumanetworks/remark42:${ref} .
 
       - name: deploy tagged (latest) to ghcr.io and dockerhub
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         env:
           GITHUB_PACKAGE_TOKEN: ${{ secrets.PKG_TOKEN }}
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
           USERNAME: ${{ github.actor }}
-          GITHUB_SHA: ${{ github.sha}}
-          GITHUB_REF: ${{ github.ref}}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo "GITHUB_REF=${GITHUB_REF}, GITHUB_SHA=${GITHUB_SHA}, GIT_BRANCH=${ref}"
           echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
-          echo ${DOCKER_HUB_TOKEN} | docker login -u umputun --password-stdin
           docker buildx build --push \
               --build-arg SKIP_BACKEND_TEST=true --build-arg SKIP_FRONTEND_TEST=true --build-arg CI=github \
               --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} --build-arg GITHUB_REF=${GITHUB_REF} \
               --platform linux/amd64,linux/arm/v7,linux/arm64 \
-              -t ghcr.io/umputun/remark42:${ref} -t ghcr.io/umputun/remark42:latest \
-              -t umputun/remark42:${ref} -t umputun/remark42:latest .
-
-      - name: remote deployment to remark42.com from master
-        if: ${{ github.ref == 'refs/heads/master' }}
-        env:
-          UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
-        run: curl -s https://jess.umputun.com/update/remark42-core/${UPDATER_KEY}
+              -t ghcr.io/izumanetworks/remark42:${ref} -t ghcr.io/izumanetworks/remark42:latest \
+              .

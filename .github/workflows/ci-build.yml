@@ -1,6 +1,7 @@
 name: build
 
 on:
+  workflow_dispatch:
   push:
     branches:
     tags:
@@ -69,7 +70,7 @@ jobs:
           docker buildx build --push \
               --build-arg SKIP_BACKEND_TEST=true --build-arg SKIP_FRONTEND_TEST=true --build-arg CI=github \
               --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} --build-arg GITHUB_REF=${GITHUB_REF} \
-              --platform linux/amd64,linux/arm/v7,linux/arm64 \
+              --platform linux/amd64 \
               -t ghcr.io/izumanetworks/remark42:${ref} .
 
       - name: deploy tagged (latest) to ghcr.io and dockerhub
@@ -86,6 +87,6 @@ jobs:
           docker buildx build --push \
               --build-arg SKIP_BACKEND_TEST=true --build-arg SKIP_FRONTEND_TEST=true --build-arg CI=github \
               --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} --build-arg GITHUB_REF=${GITHUB_REF} \
-              --platform linux/amd64,linux/arm/v7,linux/arm64 \
+              --platform linux/amd64 \
               -t ghcr.io/izumanetworks/remark42:${ref} -t ghcr.io/izumanetworks/remark42:latest \
               .

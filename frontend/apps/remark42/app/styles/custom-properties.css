@@ -29,20 +29,20 @@
   --color16: #e2e8f0;
   --color31: #cbd5e1;
   --color21: #f1f5f9;
-  --color29: #0e7e9d;
-  --color9: #0aa;
-  --color15: #099;
-  --color33: #06c5c5;
-  --color40: #9cdddb;
+  --color29: #0e4e9d;
+  --color9: rgb(0, 105, 170);
+  --color15: #3684F5;
+  --color33: #4287e7;
+  --color40: #7aa2d9;
   --color43: #b7dddd;
   --color42: #c6efef;
-  --color48: rgba(37, 156, 154, 0.6);
-  --color47: rgba(37, 156, 154, 0.4);
+  --color48: rgba(54, 132, 245, 0.6);
+  --color47: rgba(60, 136, 250, 0.4);
   --color28: #672323;
   --color25: #9a0000;
   --color38: #ef0000;
   --color27: #f98989;
-  --color26: #ffd7d7;
+  --color26: #ffd7d7; 
   --color30: 204, 6, 6;
   --color12: 37, 158, 6;
 
@@ -56,7 +56,7 @@
   --chroma-04: #2aa198;
   --chroma-05: #859900;
   --chroma-06: #d33682;
-  --chroma-07: #00aee2;
+  --chroma-07: #0078e2;
 
   /* Named variables */
   --primary-color: 0, 170, 170;
